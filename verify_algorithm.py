@@ -48,33 +48,33 @@ for k in range(1000):
     a, b = 0, 0
     for i in range(2*n - 1):
         v <<= 1 # v <- RIGHTSHIFT(v)
-        a ^= (delta > 0) & ((g&1)==1) # a <- TOF(sign, g[0], a)
-        b ^= (delta > 0) & ((g&1)==0) # b <- TOF(sign, g[0] + 1, b)
+        a ^= (delta > 0) & ((g&1)==1)               # a <- TOF(sign, g[0], a)
+        b ^= (delta > 0) & ((g&1)==0)               # b <- TOF(sign, g[0] + 1, b)
 
         if a :
-            f, g = g, f # f, g <- CSWAP_a(f[n...0],g[n...0])
-            v, r = r, v # v, r <- CSWAP_a(v[lambda...0],r[lambda...0])
+            f, g = g, f                             # f, g <- CSWAP_a(f[n...0],g[n...0])
+            v, r = r, v                             # v, r <- CSWAP_a(v[lambda...0],r[lambda...0])
 
         if (g&1)==1:
-            g = g ^ (((f & mask) >> 1) << 1) # g[n...1] <- CTOF(g[0], f[Lambda...1], mask[Lambda...1], g[Lambda...1])
+            g = g ^ (((f & mask) >> 1) << 1)        # g[n...1] <- CTOF(g[0], f[Lambda...1], mask[Lambda...1], g[Lambda...1])
 
-        if b : mask >>= 1 # mask <- LEFTSHIFT_b(mask)
-        b ^= (delta > 0) & ((g&1)==0) # b <- TOF(sign, g[0] + 1, b)
+        if b : mask >>= 1                           # mask <- LEFTSHIFT_b(mask)
+        b ^= (delta > 0) & ((g&1)==0)               # b <- TOF(sign, g[0] + 1, b)
 
-        if (delta==0) : mask >>= 1 # mask <- C^n-LEFTSHIFT_delta(mask)
+        if (delta==0) : mask >>= 1                  # mask <- C^n-LEFTSHIFT_delta(mask)
 
-        if a : delta = 1- delta # delta <- CNOT(a, delta)
-        else: delta = 1 + delta # delta <- INC_(1+a)(delta)
+        if a : delta = 1- delta                     # delta <- CNOT(a, delta)
+        else: delta = 1 + delta                     # delta <- INC_(1+a)(delta)
         
-        a ^= ((g&1)==1) & ((v&1)==1) # a <- TOF(v[0], g[0], a)
+        a ^= ((g&1)==1) & ((v&1)==1)                # a <- TOF(v[0], g[0], a)
 
         if (g&1)==1:
-            r = r ^ v # r <- TOF(g[0], v[lambda...0], r[lambda...0])
+            r = r ^ v                               # r <- TOF(g[0], v[lambda...0], r[lambda...0])
 
-        g = leftRotate(g, n+1) # g <- LEFTROTATE(g[n...0])
+        g = leftRotate(g, n+1)                      # g <- LEFTROTATE(g[n...0])
 
-        assert(max(r.bit_length(), v.bit_length()) <= min(i, n) + 1)
-        assert(mask.bit_length() <= n - max(math.floor((i-1)/2), 0))
+        assert(max(r.bit_length(), v.bit_length()) <= min(i, n) + 1) # lambda
+        assert(mask.bit_length() <= n - max(math.floor((i-1)/2), 0)) # Lambda
         assert(a==0 & b==0)
         #overlap = math.floor(n/2)
         #test = mask | (bitReverse(r, n+1) << (n - overlap))
@@ -95,7 +95,6 @@ for k in range(1000):
     inv_R_1 = bitReverse(v, n)
     #print('inv_R_1 : {:0{width}b}'.format(inv_R_1, width=n+1))
     result = modular(bitMult(inv_R_1, R_1), R_0)
-    #print('result : {:0{width}b}'.format(result, width=n))
     assert(result == 1)
 
 print("succeed")
