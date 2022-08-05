@@ -47,7 +47,7 @@ for k in range(1000):
     #print("=============")
     a, b = 0, 0
     for i in range(2*n - 1):
-        v <<= 1 # v <- RIGHTSHIFT(v)
+        v <<= 1                                     # v <- RIGHTSHIFT(v)
         a ^= (delta > 0) & ((g&1)==1)               # a <- TOF(sign, g[0], a)
         b ^= (delta > 0) & ((g&1)==0)               # b <- TOF(sign, g[0] + 1, b)
 
