@@ -5,6 +5,7 @@ CNOT_new = 0
 TOF_origin = 0
 CNOT_origin = 0
 
+
 R.<n,logn> = PolynomialRing(QQ)
 
 ############## New Resource Measurement ###############
@@ -27,23 +28,27 @@ TOF += (n+1) * sum_1
 CNOT += 2 * (sum_lambda + sum_1)            # v, r <- CSWAP_a(v[lambda...0],r[lambda...0])
 TOF += sum_lambda + sum_1
 
+# CNOT += ??
+TOF += sum_Lambda + (1/2*n^2 + 1/2*n -1) - sum_1 # g[n...1] <- CTOF_WITH_UNARY_ITERATION(mask, g[0], f[Lambda...1], g[Lambda...1])
 
-TOF += 3 * sum_Lambda                       # g[n...1] <- CTOF(g[0], f[Lambda...1], mask[Lambda...1], g[Lambda...1])
+CNOT += sum_1 * (2 * logn + 3)
+TOF += sum_1 * (3*logn - 2)                  # mask <- INC_b(mask) // use 1 more ancilla qubit then CTOF = 2 TOF + logn ancilla(for controlled increment)
 
-CNOT += 2 * sum_Lambda                      # mask <- LEFTSHIFT_b(mask[Lambda...0])
-TOF += sum_1 + sum_Lambda           
+ 
+#TOF += 1 * sum_1                            # b <- TOF(sign, g[0] + 1, b)
+TOF += 0
 
-TOF += 1 * sum_1                            # b <- TOF(sign, g[0] + 1, b)
-
-CNOT += 2 * sum_Lambda                      # mask <- C^n-LEFTSHIFT_delta(mask[Lambda...0])
-TOF += (4 * logn - 2) * sum_1 + sum_Lambda
+CNOT += sum_1 * (2 * logn + 3)
+TOF += (logn + 1) * sum_1 + sum_1 * (3 * logn - 2) # mask <- C^n-INC(mask) // use 1 more ancilla qubit + logn ancilla(large control part) + (logn - 1) ancilla(for controlled increment)
 
 CNOT += sum_1                               # delta <- CNOT(a, delta)
 
-CNOT += (2*logn + 3) * sum_1                # delta <- INC_(1+a)(delta)
-TOF += (22*logn + 26) * sum_1
+CNOT += (2*logn + 3) * sum_1                # delta <- INC_(1+a)(delta)     // use 1 more ancilla qubit + (logn - 1) ancilla(for increment)
+# TOF += (18*logn + 22) * sum_1
+TOF += (3*logn + 1) * sum_1
 
-TOF += sum_1                                # a <- TOF(v[0], g[0], a)
+#TOF += sum_1                                # a <- TOF(v[0], g[0], a)
+TOF += 0
 
 TOF += sum_lambda + sum_1                   # r <- TOF(g[0], v[lambda...0], r[lambda...0])
 
